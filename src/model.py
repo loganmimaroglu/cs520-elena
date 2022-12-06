@@ -6,11 +6,12 @@ from IPython.display import IFrame
 import geopandas as gpd
 import sys
 import math
+import numpy as np
+
 class Model(object):
 
     def __init__(self):
-        self.filepath = "../data/piedmont.graphml"
-        # self.filepath = ""
+        self.filepath = "./data/piedmont.graphml"
     def osm_network(self):
         """
         Builds an Open Street Maps network of Amherst, MA and uses Google's Elevation API
@@ -30,7 +31,7 @@ class Model(object):
             google_elevation_api_key = os.getenv('google_elevation_api_key')
 
             g = ox.add_node_elevations_google(g, api_key=google_elevation_api_key)
-            g = ox.add_edge_grades(g)
+            g = ox.add_edge_grades(g, add_absolute=True)
 
             ox.save_graphml(g, self.filepath)
 
@@ -68,7 +69,7 @@ class Model(object):
         return nx.shortest_path_length(G, orig_node, dest_node, weight="length"),shortest_path
 
     # Dijkstra or/and A*
-    def shortest_path_dijkstra(self, origin, destination,scale):
+    def shortest_path_dijkstra(self, origin, destination, scale):
         G = self.osm_network()
         nodes, edges = ox.graph_to_gdfs(G)
         # print(nodes.iloc[:,0:2][100:150])
@@ -84,6 +85,7 @@ class Model(object):
         count = 0
         filtered_paths = []
         # print(shortest_length)
+        # TODO: fix filtering
         for path in paths:
             temp_length = 0
             for i in range(len(path)-1):
@@ -101,26 +103,27 @@ class Model(object):
         
     def maximize_elevation_path(self, origin, destination, scale):
         G = self.osm_network()
-        nodes, edges = ox.graph_to_gdfs(G)        
-        final_path = []
-        filtered_paths = self.shortest_path_dijkstra(origin, destination,scale)
+
+        filtered_paths = self.shortest_path_dijkstra(origin, destination, scale)
         print('number of paths after filtering:{}'.format(len(filtered_paths)))
-        #each node has elevation
-        elevation = float('-inf')
-        for path in filtered_paths:
-            temp_ele = 0
-            for i in range(len(path) - 1):
-                # print(G.nodes[path[i]]['elevation'])
-                u = path[i]
-                v = path[i+1]
-                temp_ele += G.nodes[path[i]]['elevation']
-            if(temp_ele > elevation):
-                final_path = path
-                elevation = temp_ele
-        return final_path
-        
+
+        highest_average_grade_path = max(filtered_paths, key=lambda path: np.mean(ox.utils_graph.get_route_edge_attributes(G, path, "grade_abs")))
+        self.print_route_stats(highest_average_grade_path)
+
+        return max(filtered_paths, key=lambda path: np.mean(ox.utils_graph.get_route_edge_attributes(G, path, "grade_abs")))
+
     def all_paths(self,origin, destination, threshold):
-        G= self.osm_network()
+        G = self.osm_network()
         orig_node = ox.distance.nearest_nodes(G, X=origin[1], Y=origin[0])
         dest_node = ox.distance.nearest_nodes(G, X=destination[1], Y=destination[0])
         return nx.all_simple_paths(G,orig_node, dest_node, cutoff=threshold)
+
+    def print_route_stats(self, route):
+        G = self.osm_network();
+
+        route_grades = ox.utils_graph.get_route_edge_attributes(G, route, "grade_abs")
+        msg = "The average grade is {:.1f}% and the max is {:.1f}%"
+        print(msg.format(np.mean(route_grades) * 100, np.max(route_grades) * 100))
+
+        route_lengths = ox.utils_graph.get_route_edge_attributes(G, route, "length")
+        print("Total trip distance: {:,.0f} meters".format(np.sum(route_lengths)))

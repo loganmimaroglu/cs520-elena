@@ -11,7 +11,7 @@ m = model.Model()
 m.osm_network()
 # print(m.shortest_path_and_length(orig_point, dest_point))
 l, p = m.shortest_path_and_length(orig_point, dest_point)
-print('shortest path:',p)
+print('shortest path:', p, l)
 print('alternative path with maximizing elevation gain:',m.maximize_elevation_path(orig_point, dest_point, 1.1))
 # x_percent = 1.2
 # paths = m.all_paths(orig_point, dest_point, x_percent)
