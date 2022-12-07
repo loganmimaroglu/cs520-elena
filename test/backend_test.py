@@ -10,7 +10,7 @@ dest_point = (37.823049, -122.242448)
 orig_address = "141 Echo Avenue, Oakland, CA 94611"
 dest_address = "1123 Oakland Avenue, Piedmont, CA 94611"
 
-m = map_model.MapModel()
+m = map_model.MapModel("../data/piedmont.graphml")
 p = path_finding_view.PathFindingView()
 
 path = p.get_route(m.osm_network(), orig_address, dest_address, grade="max", scale=1.1)

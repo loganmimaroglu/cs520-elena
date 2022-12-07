@@ -7,8 +7,8 @@ import numpy as np
 
 
 class MapModel(object):
-    def __init__(self):
-        self.filepath = "./data/piedmont.graphml"
+    def __init__(self, filepath):
+        self.filepath = filepath
         self.route_map = self.osm_network()
 
     def osm_network(self):
