@@ -1,57 +1,78 @@
+"""
+Determines an optimal route and returns the data representing such a route.
+
+"""
+
 from IPython.display import IFrame
 import osmnx as ox
 import numpy as np
 import networkx as nx
 import math
 
+
 class PathFindingView(object):
 
     def __init__(self):
         pass
 
-    def get_route(self, route_map: nx.MultiDiGraph, orig: str, dest: str, grade: str = None, scale: float = None):
-        # orig_node_id, dest_node_id = self.addresses_to_nodes(route_map, (orig, dest))
-        orig_node_id, dest_node_id = orig, dest
+    def get_route(self, route_map: nx.MultiDiGraph, orig: str, dest: str, grade: str = None, scale: float = None) -> list[list[int]]:
+        """
+        Given whether to maximize or minimize elevation and what percent longer than the shortest path the distance can,
+        this algorithm returns a route that is within the required range well maximizing or minimizing distance.
+
+        :param route_map: The routable area represented as a weighted directed graphs with self loops and parallel edges
+        :param orig: A valid street address i.e. "141 Echo Avenue, Oakland, CA 94611" representing the starting location
+        :param dest: A valid street address i.e. "141 Echo Avenue, Oakland, CA 94611" representing the ending location
+        :param grade: A string of either "max" or "min" or None representing whether to minimize or maximize the average
+        :param scale: A decimal representing what percent longer than the fastest route the returned route should be
+        :return: A inorder list of GPS coordinates representing waypoints where the first node is the origin and the
+                 last node is the destination.
+        """
+
+        orig_node_id, dest_node_id = self.addresses_to_nodes(route_map, (orig, dest))
 
         simple_paths_filtered = self.simple_paths_filtered(route_map, orig_node_id, dest_node_id, scale)
 
+        route = None
         if grade == "max":
-            return max(simple_paths_filtered, key=lambda path: np.mean(ox.utils_graph.get_route_edge_attributes(route_map, path, "grade_abs")))
+            route = max(simple_paths_filtered, key=lambda path: np.mean(ox.utils_graph.get_route_edge_attributes(route_map, path, "grade_abs")))
         elif grade == "min":
-            return min(simple_paths_filtered, key=lambda path: np.mean(ox.utils_graph.get_route_edge_attributes(route_map, path, "grade_abs")))
+            route = min(simple_paths_filtered, key=lambda path: np.mean(ox.utils_graph.get_route_edge_attributes(route_map, path, "grade_abs")))
         else:
-            # return closest value
+            # TODO: add logic to find route that is closest to scale unless scale is none then return shortest route
             pass
 
+        route_gps = []
+        # x is lon y is lat
+        for node_id in route:
+            route_gps.append([route_map.nodes[node_id]['x'], route_map.nodes[node_id]['y']])
 
-    def shortest_path_and_length(self, route_map, orig_node_id: int, dest_node_id: int) -> tuple[int, list[int]]:
+        return route_gps
+
+
+    def shortest_path_and_length(self, route_map: nx.MultiDiGraph, orig_node_id: int, dest_node_id: int) -> tuple[int, list[int]]:
         """
         Computes the path that minimizes the edge weight length and cumulative length of such a path.
 
-        :param route_map: NetworkX graph
-        :type: NetworkX graph
+        :param route_map: The routable area represented as a weighted directed graphs with self loops and parallel edges
         :param orig_node_id: Starting node for path
-        :type: int
         :param dest_node_id: Ending node for path
-        :type: int
         :return: Return a single list of nodes id's in the shortest path from source to target
-        :rtype: (int, list[int])
         """
 
         shortest_path = nx.shortest_path(route_map, orig_node_id, dest_node_id, weight="length")
         shortest_path_length = nx.shortest_path_length(route_map, orig_node_id, dest_node_id, weight="length")
         return shortest_path_length, shortest_path
 
-    def simple_paths_filtered(self, route_map: nx.MultiDiGraph, orig_node_id: int, dest_node_id: int, scale: float):
+    def simple_paths_filtered(self, route_map: nx.MultiDiGraph, orig_node_id: int, dest_node_id: int, scale: float) -> list[list[int]]:
         """
-        Finds and returns a list of paths closest in length to the desired distance.
+        Finds and returns a list of paths closest to the desired distance.
 
-        :param route_map:
-        :param orig_node_id:
-        :param dest_node_id:
-        :param grade:
-        :param scale:
-        :return:
+        :param route_map: The routable area represented as a weighted directed graphs with self loops and parallel edges
+        :param orig_node_id: Starting node's id
+        :param dest_node_id: End node's id
+        :param scale: A decimal representing what percent longer than the fastest route the returned route should be
+        :return: A filtered list of routes
         """
         nodes, edges = ox.graph_to_gdfs(route_map)
 
@@ -82,7 +103,6 @@ class PathFindingView(object):
 
             if shortest_path_len <= temp_len <= target_len:
                 filtered_paths.append(path)
-            print(count)
             count += 1
 
         print('number of paths before filtering:{}'.format(count))
@@ -92,12 +112,9 @@ class PathFindingView(object):
         """
         Converts address queries, i.e. "1 Presidents Dr, Amherst MA 01002" to the nearest nodes node IDs
 
-        :param route_map: NetworkX graph
-        :type: NetworkX graph
+        :param route_map: The routable area represented as a weighted directed graphs with self loops and parallel edges
         :param addresses: A tuple of length 2 representing the start address and end address
-        :type: (str, str)
         :return: a tuple of nearest node IDs
-        :rtype: (int, int)
         """
 
         # Convert address to latitiude, longitude
