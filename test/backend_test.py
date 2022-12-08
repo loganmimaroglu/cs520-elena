@@ -1,3 +1,6 @@
+import os, sys
+sys.path.append('./')
+
 from src.backend.model import map_model
 from src.backend.view import path_finding_view
 
@@ -13,5 +16,5 @@ dest_address = "1123 Oakland Avenue, Piedmont, CA 94611"
 m = map_model.MapModel("../data/piedmont.graphml")
 p = path_finding_view.PathFindingView()
 
-path = p.get_route(m.osm_network(), orig_address, dest_address, grade="max", scale=1.1)
+path = p.get_route(m.osm_network(), orig_address, dest_address, grade="max", scale=1.2)
 print(path)
