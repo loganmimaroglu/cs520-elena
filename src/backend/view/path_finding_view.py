@@ -66,7 +66,6 @@ class PathFindingView(object):
         all_shortest_path = nx.all_shortest_paths(route_map, orig_node_id, dest_node_id, weight="length")
         shortest_path = None
         for path in all_shortest_path:
-            print(1)
             if(len(path) > max_len):
                 max_len = len(path)
                 shortest_path = path
