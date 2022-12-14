@@ -60,9 +60,22 @@ class PathFindingView(object):
         :return: Return a single list of nodes id's in the shortest path from source to target
         """
 
-        shortest_path = nx.shortest_path(route_map, orig_node_id, dest_node_id, weight="length")
-        shortest_path_length = nx.shortest_path_length(route_map, orig_node_id, dest_node_id, weight="length")
-        return shortest_path_length, shortest_path
+        # shortest_path = nx.shortest_path(route_map, orig_node_id, dest_node_id, weight="length")
+        # shortest_path_length = nx.shortest_path_length(route_map, orig_node_id, dest_node_id, weight="length")
+        max_len = 0
+        all_shortest_path = nx.all_shortest_paths(route_map, orig_node_id, dest_node_id, weight="length")
+        shortest_path = None
+        for path in all_shortest_path:
+            print(1)
+            if(len(path) > max_len):
+                max_len = len(path)
+                shortest_path = path
+        dis = 0
+        for i in range(len(shortest_path) -1):
+            u = shortest_path[i]
+            v = shortest_path[i+1]
+            dis += route_map.adj[u][v][0]['length']
+        return dis, shortest_path
 
     def simple_paths_filtered(self, route_map: nx.MultiDiGraph, orig_node_id: int, dest_node_id: int, scale: float) -> list[list[int]]:
         """
@@ -82,7 +95,7 @@ class PathFindingView(object):
         diff = shortest_path_len * (scale - 1)
 
         threshold = len(shortest_path) + math.ceil(diff / min_len)
-        print(threshold)
+        # print(threshold)
 
         paths = nx.all_simple_paths(route_map, orig_node_id, dest_node_id, cutoff=threshold)
 
