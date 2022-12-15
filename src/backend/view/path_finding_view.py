@@ -28,9 +28,9 @@ class PathFindingView(object):
         :return: A inorder list of GPS coordinates representing waypoints where the first node is the origin and the
                  last node is the destination.
         """
-
+        if(scale != None and scale < 1.0):
+            raise TypeError("Scale value must be greater than 1.0")
         orig_node_id, dest_node_id = self.addresses_to_nodes(route_map, (orig, dest))
-
         simple_paths_filtered = self.simple_paths_filtered(route_map, orig_node_id, dest_node_id, scale)
 
         route = None
@@ -40,8 +40,22 @@ class PathFindingView(object):
             route = min(simple_paths_filtered, key=lambda path: np.mean(ox.utils_graph.get_route_edge_attributes(route_map, path, "grade_abs")))
         else:
             # TODO: add logic to find route that is closest to scale unless scale is none then return shortest route
-            pass
-
+            if(scale == None):
+                _,route = self.shortest_path_and_length(route_map, orig_node_id, dest_node_id)
+            else:
+                shortest_dis, shortest_route = self.shortest_path_and_length(route_map, orig_node_id, dest_node_id)
+                route = None
+                target_dis = shortest_dis*scale
+                closest_dis = float('inf')
+                for path in simple_paths_filtered:
+                    temp_dis = 0
+                    for i in range(len(path) -1):
+                        u = path[i]
+                        v = path[i+1]
+                        temp_dis += route_map.adj[u][v][0]['length']
+                    if(abs(temp_dis - target_dis) < closest_dis):
+                        closest_dis= abs(temp_dis - target_dis)
+                        route = path
         route_gps = []
         # x is lon y is lat
         for node_id in route:

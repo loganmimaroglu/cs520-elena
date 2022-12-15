@@ -15,13 +15,18 @@ dest_point = (37.823049, -122.242448)
 orig_address = "141 Echo Avenue, Oakland, CA 94611"
 dest_address = "1123 Oakland Avenue, Piedmont, CA 94611"
 
-m = map_model.MapModel("../data/piedmont.graphml")
-p = path_finding_view.PathFindingView()
+# m = map_model.MapModel("../data/piedmont.graphml")
+# p = path_finding_view.PathFindingView()
 # path = p.get_route(m.osm_network(), orig_address, dest_address, grade="max", scale=1.1)
 # print(path)
 
   
 class TestPathFinding(unittest.TestCase):
+    global m 
+    global p
+    m = map_model.MapModel("../data/piedmont.graphml")
+    p = p = path_finding_view.PathFindingView()
+
     # test the shortest path function 
     def test_shortest_path(self):
         G = m.osm_network()
@@ -41,9 +46,9 @@ class TestPathFinding(unittest.TestCase):
         true_dis = 2
         self.assertEqual(output, true_path)
         self.assertEqual(dis, true_dis)
-        return 
+
+    #test when the graph has more paths
     def test_shortest_path2(self):
-        #test when the graph has more paths
         G = m.osm_network()
         path1 = [1,2,3,4,5]
         path2 = [1,2,7,10,5]
@@ -76,9 +81,9 @@ class TestPathFinding(unittest.TestCase):
         self.assertEqual(output, true_path)
         self.assertEqual(dis, true_dis)
 
+    #test the return shortest path has the maximum array size \\
+    #while all the paths have the same distance
     def test_shortest_path3(self):
-        #test the return shortest path has the maximum array size \\
-        #while all the paths have the same distance
         G = m.osm_network()
         path1 = [1,2,3,4,5]
         path2 = [1,2,7,10,520,5]
@@ -108,8 +113,8 @@ class TestPathFinding(unittest.TestCase):
         self.assertEqual(output, true_path)
         self.assertEqual(dis, true_dis)
     
+    #test the filter path function
     def test_filter_path(self):
-        #test the filter path function
         G = m.osm_network()
         path1 = [1,2,10,3]
         path2 = [1,4,11,3]
@@ -165,7 +170,14 @@ class TestPathFinding(unittest.TestCase):
         output = p.simple_paths_filtered(G, 1,3, scale=1.4)
         self.assertEqual(output, true_paths)
 
-    #TODO: test scale is negative
-    
+    #test input validation for the scale 
+    def test_scale(self):
+        G = m.osm_network()
+        self.assertRaises(TypeError, p.get_route,G,1,2,'max', 0.5)
+        self.assertRaises(TypeError, p.get_route,G,1,2,'max', -0.5)
+        self.assertRaises(TypeError, p.get_route,G,1,2,'max')
+    #test the get route methods, maximum and minimum. 
+    # def test_get_route(self):
+
 if __name__ == '__main__':
     unittest.main()
