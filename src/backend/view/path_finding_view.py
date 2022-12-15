@@ -102,7 +102,7 @@ class PathFindingView(object):
 
         count = 0
         filtered_paths = []
-
+        
         for path in paths:
             temp_len = 0
             for i in range(len(path) - 1):
