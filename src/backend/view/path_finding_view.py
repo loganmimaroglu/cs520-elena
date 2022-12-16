@@ -99,6 +99,8 @@ class PathFindingView(object):
         :param scale: A decimal representing what percent longer than the fastest route the returned route should be
         :return: A filtered list of routes
         """
+        if(scale == None):
+            scale = 1.0
         nodes, edges = ox.graph_to_gdfs(route_map)
 
         min_len = edges['length'].min()
@@ -145,8 +147,8 @@ class PathFindingView(object):
         # Convert address to latitiude, longitude
         pos1_lat, pos1_lng = ox.geocode(addresses[0])
         pos2_lat, pos2_lng = ox.geocode(addresses[1])
-
         # Convert latitude, longitude to nodes in the graph
+
         pos1_node = ox.distance.nearest_nodes(route_map, X=pos1_lng, Y=pos1_lat)
         pos2_node = ox.distance.nearest_nodes(route_map, X=pos2_lng, Y=pos2_lat)
 

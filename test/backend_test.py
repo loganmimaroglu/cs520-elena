@@ -1,4 +1,5 @@
 import os, sys
+import osmnx as ox
 import networkx as nx
 import unittest
 sys.path.append('./')
@@ -116,7 +117,6 @@ class TestPathFinding(unittest.TestCase):
         true_path =  path2
         true_dis = 5
 
-        print(true_path, output)
         self.assertEqual(output, true_path)
         self.assertEqual(dis, true_dis)
     
@@ -188,12 +188,107 @@ class TestPathFinding(unittest.TestCase):
         self.assertRaises(TypeError, p.get_route,G,1,2,'max', 0.5)
         self.assertRaises(TypeError, p.get_route,G,1,2,'max', -0.5)
 
-    #test the get route methods, maximum and minimum and neither. 
-    # def test_get_route(self):
-    #     G = m.osm_network()
-    #     G.add_edges_from([(1,2),(2,10),(10,3)])
-    #     G.nodes[1]['x'] = 37.826618
-    #     G.nodes[1]['y'] = -122.24787
-    #     p.get_route(G,orig = "133 Echo Ave, Oakland, CA 94611, USA", dest = "133 Echo Ave, Oakland, CA 94611, USA", grade='max', scale=1.2)
+
+# class includes test cases for the get route methods, maximum and minimum and neither. 
+class TestGetRoute(unittest.TestCase):
+    global m 
+    global p
+    global G
+    global path1
+    global path2
+    global path3
+    m = map_model.MapModel("../data/piedmont.graphml")
+    p = p = path_finding_view.PathFindingView()
+    G = m.osm_network()
+    path1 = [1,2,10,3]
+    path2 = [1,4,11,3]
+    path3 = [1,5,12,3] 
+
+    G.add_nodes_from(path1)
+    G.add_nodes_from(path2)
+    G.add_nodes_from(path3)
+
+    G.add_edges_from([(1,2), (2,10), (10,3)])
+    G.add_edges_from([(1,4),(4,11),(11,3)])
+    G.add_edges_from([(1,5),(5,12),(12,3)])
+
+    G.nodes[1]['x'] = -122.247795
+    G.nodes[1]['y'] = 37.826389
+    
+    G.nodes[2]['x'] = 2.1564
+    G.nodes[2]['y'] = 34.154
+
+    G.nodes[4]['x'] = 3.878
+    G.nodes[4]['y'] = 0.4851
+
+    G.nodes[5]['x'] = 7.154
+    G.nodes[5]['y'] = 8.848
+
+    G.nodes[10]['x'] = 14.05
+    G.nodes[10]['y'] = 13.005
+
+    G.nodes[11]['x'] = 102.11
+    G.nodes[11]['y'] = 74.15
+
+    G.nodes[12]['x'] = 90.15
+    G.nodes[12]['y'] = 88.51
+
+    G.nodes[3]['x'] = -122.248543
+    G.nodes[3]['y'] = 37.827395
+
+    G[1][2][0]["length"] = 3
+    G[2][10][0]["length"] = 3
+    G[10][3][0]["length"] = 3
+
+    G[1][2][0]["grade_abs"] = 0.8159
+    G[2][10][0]["grade_abs"] = 0.2005
+    G[10][3][0]["grade_abs"] = 0.1145
+
+    G[1][4][0]["length"] = 4
+    G[4][11][0]["length"] = 5
+    G[11][3][0]["length"] = 4
+
+
+    G[1][4][0]["grade_abs"] = 0.6648
+    G[4][11][0]["grade_abs"] = 0.0001
+    G[11][3][0]["grade_abs"] = 0.0002
+
+    G[1][5][0]["length"] = 2
+    G[5][12][0]["length"] = 3
+    G[12][3][0]["length"] = 7
+
+    G[1][5][0]["grade_abs"] = 0.4951
+    G[5][12][0]["grade_abs"] = 0.2618
+    G[12][3][0]["grade_abs"] = 0.5204
+
+    #test maximum, the maximum elevation path is path 3
+    def test_get_route_max(self):
+        output = p.get_route(G,orig = "141 Echo Avenue, Oakland, CA 94611", dest = "81 Echo Avenue, Oakland, CA 94611", grade='max', scale=1.5)
+        true_path = [[G.nodes[id]['x'], G.nodes[id]['y']] for id in path3]
+        self.assertEqual(output, true_path)
+
+    #test minimum, the minimum elevation path is path 2
+    def test_get_route_min(self):
+        output = p.get_route(G,orig = "141 Echo Avenue, Oakland, CA 94611", dest = "81 Echo Avenue, Oakland, CA 94611", grade='min', scale=1.5)
+        true_path = [[G.nodes[id]['x'], G.nodes[id]['y']] for id in path2]
+        self.assertEqual(output, true_path)
+
+    #test grade is none, it should return the closest path to the scaled path or the shortest path if scale is None
+    def test_get_route(self):
+        output = p.get_route(G,orig = "141 Echo Avenue, Oakland, CA 94611", dest = "81 Echo Avenue, Oakland, CA 94611", grade=None, scale=1.5)
+        true_path = [[G.nodes[id]['x'], G.nodes[id]['y']] for id in path2]
+        self.assertEqual(output, true_path)
+
+    #test with a different scale
+    def test_get_route2(self):
+        output = p.get_route(G,orig = "141 Echo Avenue, Oakland, CA 94611", dest = "81 Echo Avenue, Oakland, CA 94611", grade=None, scale=1.4)
+        true_path = [[G.nodes[id]['x'], G.nodes[id]['y']] for id in path3]
+        self.assertEqual(output, true_path)
+    
+    #test when scale is none, it should just return the shorest path
+    def test_get_route3(self):
+        output = p.get_route(G,orig = "141 Echo Avenue, Oakland, CA 94611", dest = "81 Echo Avenue, Oakland, CA 94611", grade=None, scale=None)
+        true_path = [[G.nodes[id]['x'], G.nodes[id]['y']] for id in path1]
+        self.assertEqual(output, true_path)
 if __name__ == '__main__':
     unittest.main()
