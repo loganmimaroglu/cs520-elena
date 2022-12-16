@@ -88,6 +88,11 @@ class TestPathFinding(unittest.TestCase):
         path1 = [1,2,3,4,5]
         path2 = [1,2,7,10,520,5]
         path3 = [1,21,53,5] 
+
+        G.add_nodes_from(path1)
+        G.add_nodes_from(path2)
+        G.add_nodes_from(path3)
+
         G.add_edges_from([(1,2),(2,3),(3,4),(4,5)])
         G.add_edges_from([(1,2),(2,7),(7,10),(10,520), (520,5)])
         G.add_edges_from([(1,21),(21,53), (53,5)])
@@ -110,6 +115,8 @@ class TestPathFinding(unittest.TestCase):
         dis, output = p.shortest_path_and_length(G, 1,5)
         true_path =  path2
         true_dis = 5
+
+        print(true_path, output)
         self.assertEqual(output, true_path)
         self.assertEqual(dis, true_dis)
     
@@ -119,6 +126,11 @@ class TestPathFinding(unittest.TestCase):
         path1 = [1,2,10,3]
         path2 = [1,4,11,3]
         path3 = [1,5,12,3] 
+
+        G.add_nodes_from(path1)
+        G.add_nodes_from(path2)
+        G.add_nodes_from(path3)
+
         G.add_edges_from([(1,2),(2,10),(10,3)])
         G.add_edges_from([(1,4),(4,11),(11,3)])
         G.add_edges_from([(1,5),(5,12),(12,3)])
@@ -175,9 +187,13 @@ class TestPathFinding(unittest.TestCase):
         G = m.osm_network()
         self.assertRaises(TypeError, p.get_route,G,1,2,'max', 0.5)
         self.assertRaises(TypeError, p.get_route,G,1,2,'max', -0.5)
-        self.assertRaises(TypeError, p.get_route,G,1,2,'max')
-    #test the get route methods, maximum and minimum. 
-    # def test_get_route(self):
 
+    #test the get route methods, maximum and minimum and neither. 
+    # def test_get_route(self):
+    #     G = m.osm_network()
+    #     G.add_edges_from([(1,2),(2,10),(10,3)])
+    #     G.nodes[1]['x'] = 37.826618
+    #     G.nodes[1]['y'] = -122.24787
+    #     p.get_route(G,orig = "133 Echo Ave, Oakland, CA 94611, USA", dest = "133 Echo Ave, Oakland, CA 94611, USA", grade='max', scale=1.2)
 if __name__ == '__main__':
     unittest.main()

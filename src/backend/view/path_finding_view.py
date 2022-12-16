@@ -32,7 +32,6 @@ class PathFindingView(object):
             raise TypeError("Scale value must be greater than 1.0")
         orig_node_id, dest_node_id = self.addresses_to_nodes(route_map, (orig, dest))
         simple_paths_filtered = self.simple_paths_filtered(route_map, orig_node_id, dest_node_id, scale)
-
         route = None
         if grade == "max":
             route = max(simple_paths_filtered, key=lambda path: np.mean(ox.utils_graph.get_route_edge_attributes(route_map, path, "grade_abs")))
