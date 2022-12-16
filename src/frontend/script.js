@@ -1,12 +1,38 @@
 mapboxgl.accessToken =
   'pk.eyJ1IjoibG1pbWFyb2dsdSIsImEiOiJjbGJlZmNxMnowYXlwM25uazJkZjBkenAzIn0.Hs-PwwNjmXbxpbqzHIZaNw';
 
-const map = new mapboxgl.Map({
-  container: 'map', // Specify the container ID
-  style: 'mapbox://styles/mapbox/streets-v12', // Specify which map style to use
-  center: [-122.247604, 37.82625], // Specify the starting position
-  zoom: 14.5, // Specify the starting zoom
-});
+setupMap([-2.24, 53.48]);
+
+function setupMap(center) {
+  const map = new mapboxgl.Map({
+    container: "map",
+    style: "mapbox://styles/mapbox/streets-v12",
+    center: center,
+    zoom: 14.5,
+  });
+
+  // Add geolocate control to the map.
+  map.addControl(
+    new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      },
+      // When active the map will receive updates to the device's location as it changes.
+      trackUserLocation: true,
+      // Draw an arrow next to the location dot to indicate which direction the device is heading.
+      showUserHeading: true
+    }), "top-right"
+  );
+
+  const nav = new mapboxgl.NavigationControl()
+  map.addControl(nav)
+
+  var directions = new MapboxDirections({
+    accessToken: mapboxgl.accessToken
+  })
+
+  map.addControl(directions, "top-left");
+}
 
 async function getRoute() {
   const data = {
