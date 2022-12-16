@@ -42,25 +42,39 @@
 			<p>Enter your start and end location:</p>
 
 			<label for="startingAddress">Starting Address:</label>
-			<input type="text" id="startingAddress" name="startingAddress" />
+			<input
+				type="text"
+				id="startingAddress"
+				name="startingAddress"
+				autocomplete="shipping address-line1"
+                placeholder="141 Echo Avenue, Oakland, CA 94611"
+                size="50"
+			/>
 
 			<br />
 			<br />
 
 			<label for="endingAddress">Ending Address:</label>
-			<input type="text" id="endingAddress" name="endingAddress" />
+			<input
+				type="text"
+				id="endingAddress"
+				name="endingAddress"
+				autocomplete="billing address-line1"
+                placeholder="1123 Oakland Avenue, Piedmont, CA 94611"
+                size="50"
+			/>
 
 			<br />
 			<br />
 
 			<label for="minmax">Min/Max:</label>
-			<input type="text" id="minmax" name="minmax" />
+			<input type="text" id="minmax" name="minmax" placeholder="min OR max"/>
 
 			<br />
 			<br />
 
 			<label for="variance">Variance:</label>
-			<input type="text" id="variance" name="variance" />
+			<input type="text" id="variance" name="variance" placeholder="0-2"/>
 
 			<br />
 			<br />
