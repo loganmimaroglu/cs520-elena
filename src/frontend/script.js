@@ -126,6 +126,11 @@ function removeRoute() {
     if (!map.getSource('route')) return;
     map.removeLayer('route');
     map.removeSource('route');
+    document.getElementById('directions').innerHTML = '';
+    document.getElementById('startingAddress').value = '';
+    document.getElementById('endingAddress').value = '';
+    document.getElementById('minmax').value = '';
+    document.getElementById('variance').value = '';
 }
 
 document.getElementById("go").addEventListener("click", updateRoute)
