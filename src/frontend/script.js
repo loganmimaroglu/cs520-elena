@@ -7,10 +7,24 @@ const map = new mapboxgl.Map({
   zoom: 14.5, // Specify the starting zoom
 });
 
+map.addControl(new mapboxgl.NavigationControl());
+
+map.addControl(
+  new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true
+    },
+    // When active the map will receive updates to the device's location as it changes.
+    trackUserLocation: true,
+    // Draw an arrow next to the location dot to indicate which direction the device is heading.
+    showUserHeading: true
+  })
+);
+
 async function getRoute() {
   const data = {
-    "orig": document.getElementById('startingAddress').value,
-    "dest": document.getElementById('endingAddress').value,
+    "orig": document.getElementById('starting-address').value + ", " + document.getElementById('starting-city').value + ", " + document.getElementById('starting-state').value + " " + document.getElementById('starting-zip').value,
+    "dest": document.getElementById('ending-address').value + ", " + document.getElementById('ending-city').value + ", " + document.getElementById('ending-state').value + " " + document.getElementById('ending-zip').value,
     'max_min': document.getElementById('minmax').value,
     'variance': document.getElementById('variance').value
   }
@@ -138,8 +152,14 @@ function removeRoute() {
   map.removeLayer('route');
   map.removeSource('route');
   document.getElementById('directions').innerHTML = '';
-  document.getElementById('startingAddress').value = '';
-  document.getElementById('endingAddress').value = '';
+  document.getElementById('starting-address').value = '';
+  document.getElementById('ending-address').value = '';
+  document.getElementById('starting-city').value = '';
+  document.getElementById('ending-city').value = '';
+  document.getElementById('starting-state').value = '';
+  document.getElementById('ending-state').value = '';
+  document.getElementById('starting-zip').value = '';
+  document.getElementById('ending-zip').value = '';
   document.getElementById('minmax').value = '';
   document.getElementById('variance').value = '';
 }
