@@ -48,20 +48,26 @@ async function getRoute() {
 
 // Use the coordinates you drew to make the Map Matching API request
 async function updateRoute() {
-  // Set the profile
-  const profile = 'walking';
-  // Get the route from our properity routing algo
-  const coords = await getRoute();
-  let newCoords = ""
-  for (let i = 0; i < coords.length; i++) {
-    if (coords.length - 1 !== i) {
-      newCoords += `${coords[i][0]},${coords[i][1]};`
-    } else {
-      newCoords += `${coords[i][0]},${coords[i][1]}`
+  if( document.getElementById('starting-address').value === '' || document.getElementById('ending-address').value === '' ||  document.getElementById('starting-city').value === '' || document.getElementById('ending-city').value === '' || document.getElementById('starting-state').value === '' || document.getElementById('ending-state').value === '' || document.getElementById('starting-zip').value === '' || document.getElementById('ending-zip').value === '' || document.getElementById('minmax').value === '' || document.getElementById('variance').value === '' )
+  {
+      document.getElementById('Error').innerHTML = '**Please enter all the required values';
+  } else {
+    // Set the profile
+    const profile = 'walking';
+    // Get the route from our properity routing algo
+    const coords = await getRoute();
+    let newCoords = ""
+    for (let i = 0; i < coords.length; i++) {
+      if (coords.length - 1 !== i) {
+        newCoords += `${coords[i][0]},${coords[i][1]};`
+      } else {
+        newCoords += `${coords[i][0]},${coords[i][1]}`
+      }
     }
+    console.log(newCoords)
+    getMatch(newCoords, profile);
   }
-  console.log(newCoords)
-  getMatch(newCoords, profile);
+
 }
 
 // Make a Map Matching request
@@ -105,16 +111,6 @@ function getInstructions(data) {
 
 // Draw the Map Matching route as a new layer on the map
 function addRoute(coords) {
-
-    //input validation
-    if( document.getElementById('startingAddress').value == '' ||
-        document.getElementById('endingAddress').value == '' ||
-        document.getElementById('minmax').value == '' ||
-        document.getElementById('variance').value == '' ) 
-        {
-            throw new Error('Please enter all the required values');
-            document.getElementById('Error').innerHTML = '**Please enter all the required values';
-        }
 
   // If a route is already loaded, remove it
   if (map.getSource('route')) {
