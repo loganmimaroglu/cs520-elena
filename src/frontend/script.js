@@ -7,6 +7,8 @@ const map = new mapboxgl.Map({
   zoom: 14.5, // Specify the starting zoom
 });
 
+map.addControl(new mapboxgl.NavigationControl());
+
 async function getRoute() {
   const data = {
     "orig": document.getElementById('starting-address').value + ", " + document.getElementById('starting-city').value + ", " + document.getElementById('starting-state').value + " " + document.getElementById('starting-zip').value,
