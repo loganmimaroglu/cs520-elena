@@ -127,8 +127,14 @@ function removeRoute() {
   map.removeLayer('route');
   map.removeSource('route');
   document.getElementById('directions').innerHTML = '';
-  document.getElementById('startingAddress').value = '';
-  document.getElementById('endingAddress').value = '';
+  document.getElementById('starting-address').value = '';
+  document.getElementById('ending-address').value = '';
+  document.getElementById('starting-city').value = '';
+  document.getElementById('ending-city').value = '';
+  document.getElementById('starting-state').value = '';
+  document.getElementById('ending-state').value = '';
+  document.getElementById('starting-zip').value = '';
+  document.getElementById('ending-zip').value = '';
   document.getElementById('minmax').value = '';
   document.getElementById('variance').value = '';
 }
