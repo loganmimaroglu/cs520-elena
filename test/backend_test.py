@@ -1,6 +1,4 @@
-import os, sys
-import osmnx as ox
-import networkx as nx
+import sys
 import unittest
 sys.path.append('./')
 

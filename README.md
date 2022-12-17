@@ -2,6 +2,8 @@
 
 A Python-based implementation for elevation aware navigation.
 
+Please see docs/build/index.html for complete documentation.
+
 ## Setup for Development
 
 ### Requirements
@@ -31,3 +33,15 @@ Logan Mimaroglu
 Jiachang Situ  
 Saiyyam Kochar  
 Rishab Maheshwari
+
+## Documentation
+
+run `./document.sh` and then open docs/build/index.html in your web browser.
+
+## Testing
+
+run `python -m unittest test/backend_test.py`
+
+## Backend Server
+
+run `./run_server.sh`

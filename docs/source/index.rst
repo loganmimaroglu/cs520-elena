@@ -11,6 +11,8 @@ Welcome to CS520 EleNA's documentation!
    :caption: Contents:
 
    backend.rst
+   requirements.rst
+   design_doc.rst
 
 
 Indices and tables

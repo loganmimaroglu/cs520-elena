@@ -9,11 +9,12 @@
 import os
 import sys
 
+sys.path.insert(0, os.path.abspath("../../src/backend/controller"))
 sys.path.insert(0, os.path.abspath("../../src/backend/view"))
 sys.path.insert(0, os.path.abspath("../../src/backend/model"))
-sys.path.insert(0, os.path.abspath("../../src/backend/controller"))
 
-project = 'CS520 EleNA'
+
+project = 'The Semicolon Coders: EleNA'
 copyright = '2022, Logan Mimaroglu, Jiachang Situ, Saiyyam Kochar, Rishab Maheshwari'
 author = 'Logan Mimaroglu, Jiachang Situ, Saiyyam Kochar, Rishab Maheshwari'
 release = '1.0'
@@ -21,7 +22,7 @@ release = '1.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.todo", "sphinx.ext.viewcode", "sphinx.ext.autodoc"]
+extensions = ["sphinx.ext.todo", "sphinx.ext.viewcode", "sphinx.ext.autodoc", "sphinx.ext.napoleon"]
 
 templates_path = ['_templates']
 exclude_patterns = []

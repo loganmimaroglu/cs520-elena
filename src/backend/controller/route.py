@@ -2,7 +2,6 @@ from flask_restful import Resource, reqparse
 from src.backend.model.map_model import MapModel
 from src.backend.view.path_finding_view import PathFindingView
 from flask import jsonify, request
-import json
 
 
 class Route(Resource):

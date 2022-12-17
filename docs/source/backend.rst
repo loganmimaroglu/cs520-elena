@@ -15,5 +15,11 @@ Backend View
 .. autoclass:: PathFindingView
     :members:
 
+
 Backend Controller
 ==================
+
+.. automodule:: route
+
+.. autoclass:: Route
+    :members:
