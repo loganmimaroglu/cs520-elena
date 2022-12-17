@@ -1,5 +1,7 @@
 // Add your Mapbox access token
 mapboxgl.accessToken = 'pk.eyJ1IjoibG1pbWFyb2dsdSIsImEiOiJjbGJlZmNxMnowYXlwM25uazJkZjBkenAzIn0.Hs-PwwNjmXbxpbqzHIZaNw';
+
+// Initialize a map
 const map = new mapboxgl.Map({
   container: 'map', // Specify the container ID
   style: 'mapbox://styles/mapbox/streets-v12', // Specify which map style to use
@@ -7,8 +9,10 @@ const map = new mapboxgl.Map({
   zoom: 14.5, // Specify the starting zoom
 });
 
+// Add zoom and rotation controls to the map.
 map.addControl(new mapboxgl.NavigationControl());
 
+// Add geolocate control to the map.
 map.addControl(
   new mapboxgl.GeolocateControl({
     positionOptions: {
@@ -21,6 +25,11 @@ map.addControl(
   })
 );
 
+
+/**
+ * This function is responsible for making the request to the backend to get the coordinates of the route
+ * @returns route - list of coordinates of the route
+ */
 async function getRoute() {
   const data = {
     "orig": document.getElementById('starting-address').value + ", " + document.getElementById('starting-city').value + ", " + document.getElementById('starting-state').value + " " + document.getElementById('starting-zip').value,
@@ -46,11 +55,14 @@ async function getRoute() {
   return route;
 }
 
-// Use the coordinates you drew to make the Map Matching API request
+/**
+ * This function is responsible for sending the coords list to other functions so that the path can be added to the map
+ * @returns null
+ */
 async function updateRoute() {
-  if( document.getElementById('starting-address').value === '' || document.getElementById('ending-address').value === '' ||  document.getElementById('starting-city').value === '' || document.getElementById('ending-city').value === '' || document.getElementById('starting-state').value === '' || document.getElementById('ending-state').value === '' || document.getElementById('starting-zip').value === '' || document.getElementById('ending-zip').value === '' || document.getElementById('minmax').value === '' || document.getElementById('variance').value === '' )
-  {
-      document.getElementById('Error').innerHTML = '**Please enter all the required values';
+  // check for empty values - throws and error if required values are not entered
+  if (document.getElementById('starting-address').value === '' || document.getElementById('ending-address').value === '' || document.getElementById('starting-city').value === '' || document.getElementById('ending-city').value === '' || document.getElementById('starting-state').value === '' || document.getElementById('ending-state').value === '' || document.getElementById('starting-zip').value === '' || document.getElementById('ending-zip').value === '' || document.getElementById('minmax').value === '' || document.getElementById('variance').value === '') {
+    document.getElementById('Error').innerHTML = '**Please enter all the required values';
   } else {
     // Set the profile
     const profile = 'walking';
@@ -67,10 +79,14 @@ async function updateRoute() {
     console.log(newCoords)
     getMatch(newCoords, profile);
   }
-
 }
 
-// Make a Map Matching request
+/**
+ * This function is responsible for sending a request to the backend to get the routes
+ * @parameters coordinates - the coordinates of the route
+ * @parameters profile - the mode of transportation to be used for the route (walking, driving, cycling)
+ * @returns null
+ */
 async function getMatch(coordinates, profile) {
   // Create the query
   const query = await fetch(
@@ -93,6 +109,11 @@ async function getMatch(coordinates, profile) {
   getInstructions(response.matchings[0])
 }
 
+/**
+ * This function is responsible for adding a new layer to the map which is our calculated route
+ * @parameters coords - the route to be taken to reach destination
+ * @returns null
+ */
 function getInstructions(data) {
   // Target the sidebar to add the instructions
   const directions = document.getElementById('directions');
@@ -109,7 +130,11 @@ function getInstructions(data) {
   )} min.</strong></p><ol>${tripDirections}</ol>`;
 }
 
-// Draw the Map Matching route as a new layer on the map
+/**
+ * This function is responsible for adding a new layer to the map which is our calculated route
+ * @parameters coords - the coordinates of the route
+ * @returns null
+ */
 function addRoute(coords) {
 
   // If a route is already loaded, remove it
@@ -142,7 +167,10 @@ function addRoute(coords) {
   }
 }
 
-// If the user clicks the delete button, remove the layer if it exists
+/**
+ * This function is responsible for resetting the entire map including all routes and input boxes
+ * @returns null
+ */
 function removeRoute() {
   if (!map.getSource('route')) return;
   map.removeLayer('route');
@@ -160,5 +188,6 @@ function removeRoute() {
   document.getElementById('variance').value = '';
 }
 
+// Add event listeners
 document.getElementById("go").addEventListener("click", updateRoute)
 document.getElementById("reset").addEventListener("click", removeRoute)
