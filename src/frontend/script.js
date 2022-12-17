@@ -105,6 +105,17 @@ function getInstructions(data) {
 
 // Draw the Map Matching route as a new layer on the map
 function addRoute(coords) {
+
+    //input validation
+    if( document.getElementById('startingAddress').value == '' ||
+        document.getElementById('endingAddress').value == '' ||
+        document.getElementById('minmax').value == '' ||
+        document.getElementById('variance').value == '' ) 
+        {
+            throw new Error('Please enter all the required values');
+            document.getElementById('Error').innerHTML = '**Please enter all the required values';
+        }
+
   // If a route is already loaded, remove it
   if (map.getSource('route')) {
     map.removeLayer('route');
