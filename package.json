@@ -1,0 +1,26 @@
+{
+  "name": "package.json",
+  "version": "1.0.0",
+  "description": "A Python-based implementation for elevation aware navigation.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest --env=jsdom"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gluestix/cs520-elena.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gluestix/cs520-elena/issues"
+  },
+  "homepage": "https://github.com/gluestix/cs520-elena#readme",
+  "devDependencies": {
+    "jest-environment-jsdom": "^29.3.1"
+  }
+}
