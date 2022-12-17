@@ -9,8 +9,8 @@ const map = new mapboxgl.Map({
 
 async function getRoute() {
   const data = {
-    "orig": document.getElementById('startingAddress').value,
-    "dest": document.getElementById('endingAddress').value,
+    "orig": document.getElementById('starting-address').value + ", " + document.getElementById('starting-city').value + ", " + document.getElementById('starting-state').value + " " + document.getElementById('starting-zip').value,
+    "dest": document.getElementById('ending-address').value + ", " + document.getElementById('ending-city').value + ", " + document.getElementById('ending-state').value + " " + document.getElementById('ending-zip').value,
     'max_min': document.getElementById('minmax').value,
     'variance': document.getElementById('variance').value
   }
