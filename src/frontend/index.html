@@ -5,11 +5,18 @@
 		<title>Get started with the Map Matching API</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<!-- Import Mapbox GL JS  -->
+
 		<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
 		<link
 			href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css"
 			rel="stylesheet"
 		/>
+		<script
+			id="search-js"
+			defer=""
+			src="https://api.mapbox.com/search-js/v1.0.0-beta.14/web.js"
+		></script>
+        
 		<style>
 			body {
 				margin: 0;
@@ -32,6 +39,54 @@
 				background-color: #fff;
 				overflow-y: scroll;
 			}
+			.info-box p {
+				font-size: x-large;
+				font-style: bold;
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			}
+			.info-box label {
+				font-size: large;
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			}
+			input[type='text'] {
+				width: 50%;
+				border: 2px solid #aaa;
+				border-radius: 4px;
+				margin: 10px 10px 10px 10px;
+				outline: none;
+				padding: 10px;
+				box-sizing: border-box;
+				transition: 0.3s;
+				position: relative;
+			}
+
+			input[type='text']:focus {
+				border-color: dodgerBlue;
+				box-shadow: 0 0 8px 0 dodgerBlue;
+			}
+			#reset {
+				background-color: #05a158;
+				border: none;
+				color: white;
+				padding: 15px 32px;
+				text-decoration: none;
+				font-size: 20px;
+				cursor: pointer;
+				width: 45%;
+				margin-top: 30px;
+				border-radius: 50px;
+			}
+			#go {
+				background-color: #3451b4;
+				border: none;
+				color: white;
+				padding: 15px 32px;
+				text-decoration: none;
+				font-size: 20px;
+				cursor: pointer;
+				border-radius: 50px;
+				margin-right: 10px;
+			}
 		</style>
 	</head>
 	<body>
@@ -39,31 +94,90 @@
 		<div id="map"></div>
 
 		<div class="info-box">
-			<p>Enter your start and end location:</p>
+            <p>Enter your start and end location:</p>
 
-			<label for="startingAddress">Starting Address:</label>
-			<input type="text" id="startingAddress" name="startingAddress" />
+			<form class="prose flex flex--column">
+				<h3>Start address</h3>
+				<input
+					class="input mb12"
+					id="starting-address"
+					autocomplete="shipping address-line1"
+					placeholder="Address"
+				/>
+				<div class="flex">
+					<input
+						class="input mb12"
+						id="starting-city"
+						autocomplete="shipping address-level2"
+						placeholder="City"
+					/>
+					<input
+						class="input mb12 ml6"
+						id="starting-state"
+						autocomplete="shipping address-level1"
+						placeholder="State"
+					/>
+					<input
+						class="input mb12 ml6"
+						autocomplete="shipping postal-code"
+                        id="starting-zip"
+						placeholder="ZIP / Postcode"
+					/>
+				</div>
 
-            <br />
-            <br />
+				<h3>End address</h3>
+				<input
+					class="input mb12"
+					id="ending-address"
+					autocomplete="billing address-line1"
+					placeholder="Address"
+				/>
+				<div class="flex">
+					<input
+						class="input mb12"
+						id="ending-city"
+						autocomplete="billing address-level2"
+						placeholder="City"
+					/>
+					<input
+						class="input mb12 ml6"
+						id="ending-state"
+						autocomplete="billing address-level1"
+						placeholder="State"
+					/>
+					<input
+						class="input mb12 ml6"
+						id="ending-zip"
+						autocomplete="billing postal-code"
+						placeholder="ZIP / Postcode"
+					/>
+				</div>
+			</form>
 
-			<label for="endingAddress">Ending Address:</label>
-			<input type="text" id="endingAddress" name="endingAddress" />
-
-            <br />
-            <br />
+			<br />
+			<br />
 
 			<label for="minmax">Min/Max:</label>
-			<input type="text" id="minmax" name="minmax" />
+			<input
+				type="text"
+				id="minmax"
+				name="minmax"
+				placeholder="min OR max"
+			/>
 
-            <br />
-            <br />
+			<br />
+			<br />
 
 			<label for="variance">Variance:</label>
-			<input type="text" id="variance" name="variance" />
+			<input
+				type="text"
+				id="variance"
+				name="variance"
+				placeholder="0-2"
+			/>
 
-            <br />
-            <br />
+			<br />
+			<br />
 
 			<button type="button" id="go">Route me!</button>
 			<button type="button" id="reset">Reset</button>
@@ -71,5 +185,16 @@
 			<div id="directions"></div>
 		</div>
 	</body>
-<script src="script.js"></script>
+	<script src="script.js"></script>
+	<script>
+		const ACCESS_TOKEN =
+			'pk.eyJ1IjoicmlzaGFibWFoZXNoIiwiYSI6ImNsYnBsb3lvdjFjN24zd2xiaXlrejVqenAifQ.wZclF8htiqdvCFYwU8QPgQ';
+
+		const script = document.getElementById('search-js');
+		script.onload = () => {
+			const collection = mapboxsearch.autofill({
+				accessToken: ACCESS_TOKEN,
+			});
+		};
+	</script>
 </html>
