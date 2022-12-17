@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 	<head>
 		<meta charset="utf-8" />
 		<title>Get started with the Map Matching API</title>
@@ -11,99 +13,24 @@
 			href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css"
 			rel="stylesheet"
 		/>
+
+		<!-- Import for autocomplete feature -->
 		<script
 			id="search-js"
 			defer=""
 			src="https://api.mapbox.com/search-js/v1.0.0-beta.14/web.js"
 		></script>
-        
-		<style>
-			body {
-				margin: 0;
-				padding: 0;
-				
-			}
 
-			#map {
-				position: absolute;
-				top: 0;
-				bottom: 0;
-				width: 100%;
-			}
-			.info-box {
-				position: absolute;
-				margin: 20px;
-				width: 25%;
-				top: 0;
-				bottom: 20px;
-				padding: 20px;
-				background-color: #fff;
-				overflow-y: scroll;
-				
-				
-			}
-			.info-box p {
-				font-size: x-large;
-				font-style: bold;
-				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-			}
-			.info-box label {
-				font-size: large;
-				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-				
-			}
-			input {
-				width: 50%;
-				border: 2px solid #aaa;
-				border-radius: 4px;
-				margin: 10px 10px 10px 10px;
-				outline: none;
-				padding: 10px;
-				box-sizing: border-box;
-				transition: 0.3s;
-				position: relative;
-			}
-
-			input:focus {
-				border-color: dodgerBlue;
-				box-shadow: 0 0 8px 0 dodgerBlue;
-			}
-			#reset {
-				background-color: #05a158;
-				border: none;
-				color: white;
-				padding: 15px 32px;
-				text-decoration: none;
-				font-size: 20px;
-				cursor: pointer;
-				width: 45%;
-				margin-top: 30px;
-				border-radius: 50px;
-				
-			}
-			.info-box h3 {
-				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-				font-style: normal;
-			}
-			#go {
-				background-color: #3451b4;
-				border: none;
-				color: white;
-				padding: 15px 32px;
-				text-decoration: none;
-				font-size: 20px;
-				cursor: pointer;
-				border-radius: 50px;
-				margin-right: 10px;
-			}
-		</style>
+		<link rel="stylesheet" href="styles.css" />
 	</head>
+
 	<body>
 		<!-- Create a container for the map -->
 		<div id="map"></div>
 
+        <!-- Create a container for the directions -->
 		<div class="info-box">
-            <p>Enter your start and end location:</p>
+			<p>Enter your start and end location:</p>
 
 			<form class="prose flex flex--column">
 				<h3>Start address</h3>
@@ -129,7 +56,7 @@
 					<input
 						class="input mb12 ml6"
 						autocomplete="shipping postal-code"
-                        id="starting-zip"
+						id="starting-zip"
 						placeholder="ZIP / Postcode"
 					/>
 				</div>
@@ -195,7 +122,10 @@
 			<div id="directions"></div>
 		</div>
 	</body>
+
 	<script src="script.js"></script>
+
+	<!-- Script for autocomplete feature -->
 	<script>
 		const ACCESS_TOKEN =
 			'pk.eyJ1IjoicmlzaGFibWFoZXNoIiwiYSI6ImNsYnBsb3lvdjFjN24zd2xiaXlrejVqenAifQ.wZclF8htiqdvCFYwU8QPgQ';
@@ -207,4 +137,5 @@
 			});
 		};
 	</script>
+    
 </html>
