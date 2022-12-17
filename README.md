@@ -45,3 +45,9 @@ run `python -m unittest test/backend_test.py`
 ## Backend Server
 
 run `./run_server.sh`
+
+## Front end
+
+start a live server using such as with this [extension for vscode](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) and boom the front end is running
+
+if you also start the backend the complete product will be functional
